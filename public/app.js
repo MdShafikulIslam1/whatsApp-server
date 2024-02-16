@@ -12,7 +12,7 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
     res.status(200).json({
-        message: 'successfully working WhatsApp application server',
+        message: 'WhatsApp application server running successfully',
     });
 });
 exports.default = app;
