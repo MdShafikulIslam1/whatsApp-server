@@ -1,7 +1,7 @@
 {
-  "name": "express-backend-setup",
+  "name": "whatsapp-server",
   "version": "1.0.0",
-  "description": "It is a template project for node-express-backend-setup.so that it can be used when needed just clone it",
+  "description": "this project is made like whatsapp-server",
   "main": "index.js",
   "scripts": {
     "start": "ts-node-dev --respawn --transpile-only src/server.ts",
@@ -9,6 +9,8 @@
     "lint:fix": "eslint --fix",
     "prettier:check": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "prettier:fix": "prettier --write .",
+    "postinstall": "prisma generate",
+    "build": "tsc",
     "lint-prettier": "yarn lint:check && yarn prettier:check",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

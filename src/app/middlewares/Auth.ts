@@ -2,8 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import ApiError from '../../error/ApiError';
 import httpStatus from 'http-status';
 import { JwtHelpers } from '../../helpers/jwtHelpes';
-import { Secret } from 'jsonwebtoken';
-import config from '../../config';
 
 const Auth =
   (...requiredRoles: string[]) =>
@@ -13,10 +11,7 @@ const Auth =
       if (!token) {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized User');
       }
-      const verifiedToken = JwtHelpers.verifyToken(
-        token,
-        config.jwt.secret_key as Secret
-      );
+      const verifiedToken = JwtHelpers.verifyToken(token, 'access_token');
       if (!verifiedToken) {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized User');
       }
