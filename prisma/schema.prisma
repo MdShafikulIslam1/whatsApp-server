@@ -9,3 +9,34 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id               String    @id @default(uuid())
+  email            String    @unique
+  name             String
+  profilePhoto     String    @default("")
+  about            String    @default("")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  sentMessages     Message[] @relation("sentMessage")
+  receivedMessages Message[] @relation("receivedMessage")
+
+  @@map("users")
+}
+
+model Message {
+  id       String @id @default(uuid())
+  senderId String
+  sender   User   @relation("sentMessage", fields: [senderId], references: [id])
+
+  receiverId    String
+  receiver      User   @relation("receivedMessage", fields: [receiverId], references: [id])
+  type          String @default("text")
+  message       String
+  messageStatus String @default("sent")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("messages")
+}

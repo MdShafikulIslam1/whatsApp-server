@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
   res.status(200).json({
-    message: 'successfully working Express Backend setup Application',
+    message: 'successfully working WhatsApp application server',
   });
 });
 
