@@ -5,19 +5,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = __importDefault(require("../../config"));
 const zod_1 = require("zod");
-const handleValidationError_1 = __importDefault(require("../../error/handleValidationError"));
 const handleZodError_1 = __importDefault(require("../../error/handleZodError"));
-const handleClientKnownError_1 = __importDefault(require("../../error/handleClientKnownError"));
+const handleValidationError_1 = __importDefault(require("../../error/handleValidationError"));
+const handleClientError_1 = __importDefault(require("../../error/handleClientError"));
 const ApiError_1 = __importDefault(require("../../error/ApiError"));
-const library_1 = require("@prisma/client/runtime/library");
+const client_1 = require("@prisma/client");
 const globalErrorHandler = (error, req, res, next) => {
     config_1.default.env === 'development'
-        ? console.log(`🐱‍🏍 globalErrorHandler ~~`, { error })
-        : '';
+        ? // eslint-disable-next-line no-console
+            console.log(`🐱‍🏍 globalErrorHandler ~~`, { error })
+        : // eslint-disable-next-line no-console
+            console.log(`🐱‍🏍 globalErrorHandler ~~`, error);
     let statusCode = 500;
     let message = 'Something went wrong !';
     let errorMessages = [];
-    if (error instanceof library_1.PrismaClientValidationError) {
+    if (error instanceof client_1.Prisma.PrismaClientValidationError) {
         const simplifiedError = (0, handleValidationError_1.default)(error);
         statusCode = simplifiedError.statusCode;
         message = simplifiedError.message;
@@ -29,8 +31,8 @@ const globalErrorHandler = (error, req, res, next) => {
         message = simplifiedError.message;
         errorMessages = simplifiedError.errorMessages;
     }
-    else if (error instanceof library_1.PrismaClientKnownRequestError) {
-        const simplifiedError = (0, handleClientKnownError_1.default)(error);
+    else if (error instanceof client_1.Prisma.PrismaClientKnownRequestError) {
+        const simplifiedError = (0, handleClientError_1.default)(error);
         statusCode = simplifiedError.statusCode;
         message = simplifiedError.message;
         errorMessages = simplifiedError.errorMessages;

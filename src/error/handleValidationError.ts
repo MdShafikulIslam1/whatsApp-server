@@ -1,18 +1,22 @@
-import { Prisma } from '@prisma/client';
 import { IGenericErrorResponse } from '../interfaces/common';
+
 const handleValidationError = (
-  err: Prisma.PrismaClientValidationError
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  error: any
 ): IGenericErrorResponse => {
+  const lines = error.message.trim().split('\n');
+  // console.log(lines[lines.length - 1])
+
   const errors = [
     {
       path: '',
-      message: err.message,
+      message: lines[lines.length - 1],
     },
   ];
-
+  const statusCode = 400;
   return {
-    statusCode: 500,
-    message: 'ValidationError',
+    statusCode,
+    message: 'Validation Error',
     errorMessages: errors,
   };
 };

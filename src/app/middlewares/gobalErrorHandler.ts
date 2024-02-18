@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -6,31 +6,30 @@ import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import config from '../../config';
 import { ZodError } from 'zod';
 import { IGenericErrorMessages } from '../../interfaces/error';
-import { Prisma } from '@prisma/client';
-import handleValidationError from '../../error/handleValidationError';
+
 import handleZodError from '../../error/handleZodError';
-import handleClientKnownError from '../../error/handleClientKnownError';
+import handleValidationError from '../../error/handleValidationError';
+import handleClientError from '../../error/handleClientError';
 import ApiError from '../../error/ApiError';
-import {
-  PrismaClientKnownRequestError,
-  PrismaClientValidationError,
-} from '@prisma/client/runtime/library';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 const globalErrorHandler: ErrorRequestHandler = (
-  error,
+  error: any,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   config.env === 'development'
-    ? console.log(`🐱‍🏍 globalErrorHandler ~~`, { error })
-    : '';
+    ? // eslint-disable-next-line no-console
+      console.log(`🐱‍🏍 globalErrorHandler ~~`, { error })
+    : // eslint-disable-next-line no-console
+      console.log(`🐱‍🏍 globalErrorHandler ~~`, error);
 
   let statusCode = 500;
   let message = 'Something went wrong !';
   let errorMessages: IGenericErrorMessages[] = [];
 
-  if (error instanceof PrismaClientValidationError) {
+  if (error instanceof Prisma.PrismaClientValidationError) {
     const simplifiedError = handleValidationError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
@@ -40,8 +39,8 @@ const globalErrorHandler: ErrorRequestHandler = (
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorMessages = simplifiedError.errorMessages;
-  } else if (error instanceof PrismaClientKnownRequestError) {
-    const simplifiedError = handleClientKnownError(error);
+  } else if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    const simplifiedError = handleClientError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorMessages = simplifiedError.errorMessages;
