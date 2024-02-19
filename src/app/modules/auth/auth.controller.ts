@@ -17,7 +17,7 @@ const onboardUser = catchAsync(async (req, res) => {
   const result = await AuthService.onboardUser(req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
-    message: 'User created successfully',
+    message: 'Account has been created successfully',
     success: true,
     data: result,
   });

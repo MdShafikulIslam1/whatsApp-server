@@ -30,7 +30,7 @@ const onboardUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
     const result = yield auth_service_1.AuthService.onboardUser(req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
-        message: 'User created successfully',
+        message: 'Account has been created successfully',
         success: true,
         data: result,
     });
