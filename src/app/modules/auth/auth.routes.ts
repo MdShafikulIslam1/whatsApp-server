@@ -7,4 +7,6 @@ router.post('/check-user', AuthController.checkUser);
 
 router.post('/onboard-user', AuthController.onboardUser);
 
+router.get('/all-user', AuthController.getAllUser);
+
 export const AuthRouter = router;

@@ -38,7 +38,27 @@ const onboardUser = async (payload: {
   return result;
 };
 
+const getAllUser = async () => {
+  const users = await prisma.user.findMany({
+    orderBy: {
+      name: 'asc',
+    },
+  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const usersGroupByInitialLetter: any = {};
+
+  users?.forEach(user => {
+    const initialLetter = user?.name?.charAt(0).toUpperCase();
+    if (!usersGroupByInitialLetter[initialLetter]) {
+      usersGroupByInitialLetter[initialLetter] = [];
+    }
+    usersGroupByInitialLetter[initialLetter].push(user);
+  });
+  return usersGroupByInitialLetter;
+};
+
 export const AuthService = {
   checkUser,
   onboardUser,
+  getAllUser,
 };

@@ -7,7 +7,15 @@ import globalErrorHandler from './app/middlewares/gobalErrorHandler';
 const app = express();
 
 //parser
+// app.use(
+//   cors({
+//     origin: 'https://whats-app-clone-frontend-pi.vercel.app',
+//     credentials: true,
+//   })
+// );
+
 app.use(cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

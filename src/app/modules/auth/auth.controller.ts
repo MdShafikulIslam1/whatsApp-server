@@ -22,8 +22,18 @@ const onboardUser = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getAllUser = catchAsync(async (req, res) => {
+  const result = await AuthService.getAllUser();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: 'Retrieve All Users',
+    success: true,
+    data: result,
+  });
+});
 
 export const AuthController = {
   checkUser,
   onboardUser,
+  getAllUser,
 };
