@@ -6,7 +6,11 @@ import globalErrorHandler from './app/middlewares/gobalErrorHandler';
 import config from './config';
 const app = express();
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', config.access_frontend_url); // Adjust the origin based on your client's URL
+  res.setHeader(
+    'Access-Control-Allow-Origin',
+    config.access_frontend_url ||
+      'https://whats-app-clone-frontend-pi.vercel.app'
+  ); // Adjust the origin based on your client's URL
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
