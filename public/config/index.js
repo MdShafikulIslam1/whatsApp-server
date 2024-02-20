@@ -9,4 +9,5 @@ dotenv_1.default.config({ path: path_1.default.join(process.cwd(), '.env') });
 exports.default = {
     port: process.env.PORT,
     env: process.env.NODE_ENV,
+    access_frontend_url: process.env.ACCESS_FRONTEND_URL,
 };

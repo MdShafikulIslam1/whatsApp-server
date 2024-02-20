@@ -7,9 +7,10 @@ const express_1 = __importDefault(require("express"));
 const routes_1 = __importDefault(require("./app/routes"));
 const http_status_1 = __importDefault(require("http-status"));
 const gobalErrorHandler_1 = __importDefault(require("./app/middlewares/gobalErrorHandler"));
+const config_1 = __importDefault(require("./config"));
 const app = (0, express_1.default)();
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Adjust the origin based on your client's URL
+    res.setHeader('Access-Control-Allow-Origin', config_1.default.access_frontend_url); // Adjust the origin based on your client's URL
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
