@@ -4,7 +4,6 @@ import sendResponse from '../../../shared/sendResponse';
 import { MessageService } from './message.service';
 
 const addMessage = catchAsync(async (req, res) => {
-  console.log('message body: ', req.body);
   const result = await MessageService.addMessage(req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -14,6 +13,18 @@ const addMessage = catchAsync(async (req, res) => {
   });
 });
 
+const getMessages = catchAsync(async (req, res) => {
+  const { from, to } = req.params;
+  const result = await MessageService.getMessages(from, to);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: 'Get Messages',
+    success: true,
+    data: result,
+  });
+});
+
 export const MessageController = {
   addMessage,
+  getMessages,
 };

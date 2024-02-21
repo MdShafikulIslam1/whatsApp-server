@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // messageService.ts
+import httpStatus from 'http-status';
+import ApiError from '../../../error/ApiError';
 import prisma from '../../../shared/prisma';
 
 // Access global variable
@@ -13,10 +15,12 @@ const addMessage = async (payload: {
 }) => {
   const { message, from, to } = payload;
   if (!message || !from || !to) {
-    return 'Message or from or to not found.';
+    throw new ApiError(
+      httpStatus.NOT_FOUND,
+      'Message or from or to not found.'
+    );
   }
   const getUser = onlineUsersMap?.get(to);
-  console.log('online user: ', getUser);
   const result = await prisma.message.create({
     data: {
       message,
@@ -41,6 +45,48 @@ const addMessage = async (payload: {
   return result;
 };
 
+const getMessages = async (from: string, to: string) => {
+  if (!from || !to) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'sender or receiver not found');
+  }
+  const messages = await prisma.message.findMany({
+    where: {
+      OR: [
+        {
+          senderId: from,
+          receiverId: to,
+        },
+        {
+          senderId: to,
+          receiverId: from,
+        },
+      ],
+    },
+    orderBy: {
+      id: 'asc',
+    },
+  });
+  const unreadMessages: any = [];
+  messages.forEach((message, index) => {
+    if (message?.messageStatus !== 'read' && message?.senderId === to) {
+      messages[index].messageStatus = 'read';
+      unreadMessages.push(message?.id);
+    }
+  });
+  await prisma.message.updateMany({
+    where: {
+      id: {
+        in: unreadMessages,
+      },
+    },
+    data: {
+      messageStatus: 'read',
+    },
+  });
+  return messages;
+};
+
 export const MessageService = {
   addMessage,
+  getMessages,
 };
