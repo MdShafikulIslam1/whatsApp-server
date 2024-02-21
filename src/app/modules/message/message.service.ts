@@ -63,7 +63,7 @@ const getMessages = async (from: string, to: string) => {
       ],
     },
     orderBy: {
-      id: 'asc',
+      createdAt: 'asc',
     },
   });
   const unreadMessages: any = [];
