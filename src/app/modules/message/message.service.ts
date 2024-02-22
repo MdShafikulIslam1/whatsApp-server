@@ -12,6 +12,7 @@ const addMessage = async (payload: {
   message: string;
   from: string;
   to: string;
+  type: string;
 }) => {
   const { message, from, to } = payload;
   if (!message || !from || !to) {
@@ -24,6 +25,7 @@ const addMessage = async (payload: {
   const result = await prisma.message.create({
     data: {
       message,
+      type: payload.type,
       messageStatus: getUser ? 'delivered' : 'sent',
       sender: {
         connect: {
