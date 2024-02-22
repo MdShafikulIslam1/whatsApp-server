@@ -24,7 +24,19 @@ const getMessages = catchAsync(async (req, res) => {
   });
 });
 
+const getInitialContactsWithMessages = catchAsync(async (req, res) => {
+  const { from } = req.params;
+  const result = await MessageService.getInitialContactsWithMessages(from);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: 'Get initial contacts with unread messages',
+    success: true,
+    data: result,
+  });
+});
+
 export const MessageController = {
   addMessage,
   getMessages,
+  getInitialContactsWithMessages,
 };

@@ -4,6 +4,9 @@ import cors from 'cors';
 import httpStatus from 'http-status';
 import globalErrorHandler from './app/middlewares/gobalErrorHandler';
 
+// Initialize onlineUsers map
+// global.onlineUsers = new Map<string, string>();
+
 const app = express();
 
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
