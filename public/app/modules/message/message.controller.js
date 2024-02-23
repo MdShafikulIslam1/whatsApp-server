@@ -12,40 +12,42 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthController = void 0;
+exports.MessageController = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
-const auth_service_1 = require("./auth.service");
-const checkUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield auth_service_1.AuthService.checkUser(req.body.email);
+const message_service_1 = require("./message.service");
+const addMessage = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield message_service_1.MessageService.addMessage(req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
-        message: 'User already exists',
+        message: 'Message added successfully',
         success: true,
         data: result,
     });
 }));
-const onboardUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield auth_service_1.AuthService.onboardUser(req.body);
+const getMessages = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { from, to } = req.params;
+    const result = yield message_service_1.MessageService.getMessages(from, to);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
-        message: 'Account has been created successfully',
+        message: 'Get Messages',
         success: true,
         data: result,
     });
 }));
-const getAllUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield auth_service_1.AuthService.getAllUser();
+const getInitialContactsWithMessages = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { from } = req.params;
+    const result = yield message_service_1.MessageService.getInitialContactsWithMessages(from);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
-        message: 'Retrieve All Users',
+        message: 'Get initial contacts with unread messages',
         success: true,
         data: result,
     });
 }));
-exports.AuthController = {
-    checkUser,
-    onboardUser,
-    getAllUser,
+exports.MessageController = {
+    addMessage,
+    getMessages,
+    getInitialContactsWithMessages,
 };

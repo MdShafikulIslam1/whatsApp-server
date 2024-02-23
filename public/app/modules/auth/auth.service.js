@@ -40,7 +40,26 @@ const onboardUser = (payload) => __awaiter(void 0, void 0, void 0, function* () 
     });
     return result;
 });
+const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
+    const users = yield prisma_1.default.user.findMany({
+        orderBy: {
+            name: 'asc',
+        },
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const usersGroupByInitialLetter = {};
+    users === null || users === void 0 ? void 0 : users.forEach(user => {
+        var _a;
+        const initialLetter = (_a = user === null || user === void 0 ? void 0 : user.name) === null || _a === void 0 ? void 0 : _a.charAt(0).toUpperCase();
+        if (!usersGroupByInitialLetter[initialLetter]) {
+            usersGroupByInitialLetter[initialLetter] = [];
+        }
+        usersGroupByInitialLetter[initialLetter].push(user);
+    });
+    return usersGroupByInitialLetter;
+});
 exports.AuthService = {
     checkUser,
     onboardUser,
+    getAllUser,
 };

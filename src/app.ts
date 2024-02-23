@@ -4,17 +4,13 @@ import cors from 'cors';
 import httpStatus from 'http-status';
 import globalErrorHandler from './app/middlewares/gobalErrorHandler';
 
-// Initialize onlineUsers map
-// global.onlineUsers = new Map<string, string>();
-
 const app = express();
 
 app.use(
   cors({
-    origin: [
-      'https://whats-app-clone-frontend-pi.vercel.app',
-      'http://localhost:3000',
-    ],
+    origin: 'https://whats-app-clone-frontend-pi.vercel.app',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   })
 );

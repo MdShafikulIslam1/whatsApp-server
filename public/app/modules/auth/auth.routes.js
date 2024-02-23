@@ -6,4 +6,5 @@ const auth_controller_1 = require("./auth.controller");
 const router = (0, express_1.Router)();
 router.post('/check-user', auth_controller_1.AuthController.checkUser);
 router.post('/onboard-user', auth_controller_1.AuthController.onboardUser);
+router.get('/all-user', auth_controller_1.AuthController.getAllUser);
 exports.AuthRouter = router;
