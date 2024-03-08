@@ -3,25 +3,26 @@ import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { AuthService } from './auth.service';
 
-const checkUser = catchAsync(async (req, res) => {
-  const result = await AuthService.checkUser(req.body.email);
+const createAccount = catchAsync(async (req, res) => {
+  const user = await AuthService.createAccount(req.body);
   sendResponse(res, {
-    statusCode: httpStatus.OK,
-    message: 'User already exists',
+    statusCode: 201,
     success: true,
-    data: result,
+    message: 'Account created successfully',
+    data: user,
   });
 });
 
-const onboardUser = catchAsync(async (req, res) => {
-  const result = await AuthService.onboardUser(req.body);
+const login = catchAsync(async (req, res) => {
+  const token = await AuthService.login(req.body);
   sendResponse(res, {
-    statusCode: httpStatus.OK,
-    message: 'Account has been created successfully',
+    statusCode: 201,
     success: true,
-    data: result,
+    message: 'Login successful',
+    data: token,
   });
 });
+
 const getAllUser = catchAsync(async (req, res) => {
   const result = await AuthService.getAllUser();
   sendResponse(res, {
@@ -32,8 +33,21 @@ const getAllUser = catchAsync(async (req, res) => {
   });
 });
 
+const getSingleUserById = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  console.log('user id: ', id);
+  const result = await AuthService.getSingleUserById(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: 'Retrieve Single User',
+    success: true,
+    data: result,
+  });
+});
+
 export const AuthController = {
-  checkUser,
-  onboardUser,
+  createAccount,
+  login,
   getAllUser,
+  getSingleUserById,
 };

@@ -5,4 +5,10 @@ export default {
   port: process.env.PORT,
   env: process.env.NODE_ENV,
   access_frontend_url: process.env.ACCESS_FRONTEND_URL as string,
+  jwt: {
+    secret: process.env.JWT_SECRET as string,
+    expires_in: process.env.JWT_EXPIRES_IN as string,
+    refresh_secret: process.env.JWT_REFRESH_SECRET as string,
+    refresh_expires_in: process.env.JWT_REFRESH_EXPIRES_IN as string,
+  },
 };

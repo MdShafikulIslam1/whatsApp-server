@@ -7,6 +7,7 @@ router.get(
   '/getInitialContacts/:from',
   MessageController.getInitialContactsWithMessages
 );
+
 router.get('/:from/:to', MessageController.getMessages);
 
 router.post('/add-message', MessageController.addMessage);
