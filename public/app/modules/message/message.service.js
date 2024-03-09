@@ -17,7 +17,7 @@ exports.MessageService = exports.getInitialContactsWithMessages = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const ApiError_1 = __importDefault(require("../../../error/ApiError"));
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
-// import { getReceiverSocketId, io } from '../../../server';
+const app_1 = require("../../../app");
 const addMessage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { message, from, to } = payload;
     if (!message || !from || !to) {
@@ -43,10 +43,10 @@ const addMessage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
             receiver: true,
         },
     });
-    // const receiverSocketId = getReceiverSocketId(to as string);
-    // if (receiverSocketId) {
-    //   io.to(receiverSocketId).emit('new_message', result);
-    // }
+    const receiverSocketId = (0, app_1.getReceiverSocketId)(to);
+    if (receiverSocketId) {
+        app_1.io.to(receiverSocketId).emit('new_message', result);
+    }
     return result;
 });
 const getMessages = (from, to) => __awaiter(void 0, void 0, void 0, function* () {

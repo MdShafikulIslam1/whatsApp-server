@@ -2,7 +2,7 @@
 import httpStatus from 'http-status';
 import ApiError from '../../../error/ApiError';
 import prisma from '../../../shared/prisma';
-// import { getReceiverSocketId, io } from '../../../server';
+import { getReceiverSocketId, io } from '../../../app';
 
 const addMessage = async (payload: {
   message: string;
@@ -38,10 +38,10 @@ const addMessage = async (payload: {
       receiver: true,
     },
   });
-  // const receiverSocketId = getReceiverSocketId(to as string);
-  // if (receiverSocketId) {
-  //   io.to(receiverSocketId).emit('new_message', result);
-  // }
+  const receiverSocketId = getReceiverSocketId(to as string);
+  if (receiverSocketId) {
+    io.to(receiverSocketId).emit('new_message', result);
+  }
 
   return result;
 };

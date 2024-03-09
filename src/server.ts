@@ -42,28 +42,14 @@
 //     io.emit('getOnlineUsers', Object.keys(userSoketMap));
 //   });
 // });
-// async function bootstrap() {
-//   try {
-//     if (!server.listening) {
-//       server.listen(config.port, () => {
-//         console.log(
-//           `Express Backend Setup Application listening on port ${config.port}`
-//         );
-//       });
-//     }
-//   } catch (error) {
-//     console.error('Failed to connect', error);
-//   }
-// }
 
-// bootstrap();
-
-import app from './app';
+// import app, { server } from './app';
+import { server } from './app';
 import config from './config';
 
 async function bootstrap() {
   try {
-    app.listen(config.port, () => {
+    server.listen(config.port, () => {
       console.log(
         `Express Backend Setup Application listening on port ${config.port}`
       );

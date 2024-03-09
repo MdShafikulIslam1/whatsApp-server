@@ -50,26 +50,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //     io.emit('getOnlineUsers', Object.keys(userSoketMap));
 //   });
 // });
-// async function bootstrap() {
-//   try {
-//     if (!server.listening) {
-//       server.listen(config.port, () => {
-//         console.log(
-//           `Express Backend Setup Application listening on port ${config.port}`
-//         );
-//       });
-//     }
-//   } catch (error) {
-//     console.error('Failed to connect', error);
-//   }
-// }
-// bootstrap();
-const app_1 = __importDefault(require("./app"));
+// import app, { server } from './app';
+const app_1 = require("./app");
 const config_1 = __importDefault(require("./config"));
 function bootstrap() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            app_1.default.listen(config_1.default.port, () => {
+            app_1.server.listen(config_1.default.port, () => {
                 console.log(`Express Backend Setup Application listening on port ${config_1.default.port}`);
             });
         }
