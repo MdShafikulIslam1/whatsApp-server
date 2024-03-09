@@ -8,7 +8,5 @@ export default {
   jwt: {
     secret: process.env.JWT_SECRET as string,
     expires_in: process.env.JWT_EXPIRES_IN as string,
-    refresh_secret: process.env.JWT_REFRESH_SECRET as string,
-    refresh_expires_in: process.env.JWT_REFRESH_EXPIRES_IN as string,
   },
 };
