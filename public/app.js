@@ -10,7 +10,8 @@ const http_status_1 = __importDefault(require("http-status"));
 const gobalErrorHandler_1 = __importDefault(require("./app/middlewares/gobalErrorHandler"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
-    origin: 'https://whats-app-clone-frontend-pi.vercel.app',
+    // origin: 'https://whats-app-clone-frontend-pi.vercel.app',
+    origin: 'http://localhost:3000',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,

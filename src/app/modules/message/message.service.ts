@@ -1,21 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// messageService.ts
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace NodeJS {
-    interface Global {
-      onlineUsers: Map<string, string>; // Assuming the map stores userIds mapped to socketIds
-    }
-  }
-}
-
 import httpStatus from 'http-status';
 import ApiError from '../../../error/ApiError';
 import prisma from '../../../shared/prisma';
-
-// Access global variable
-// eslint-disable-next-line no-undef
+import { getReceiverSocketId, io } from '../../../server';
 
 const addMessage = async (payload: {
   message: string;
@@ -30,12 +17,12 @@ const addMessage = async (payload: {
       'Message or from or to not found.'
     );
   }
-  // const getUser = onlineUsersMap?.get(to);
+  const receiverSocketId = getReceiverSocketId(to as string);
   const result = await prisma.message.create({
     data: {
       message,
       type: payload.type,
-      messageStatus: 'sent',
+      messageStatus: receiverSocketId ? 'delivered' : 'sent',
       sender: {
         connect: {
           id: from,
@@ -52,6 +39,10 @@ const addMessage = async (payload: {
       receiver: true,
     },
   });
+
+  if (receiverSocketId) {
+    io.to(receiverSocketId).emit('new_message', result);
+  }
 
   return result;
 };
@@ -100,6 +91,9 @@ const getMessages = async (from: string, to: string) => {
 //get initialContactsWithUnreadMessages
 
 export const getInitialContactsWithMessages = async (userId: string) => {
+  if (!userId) {
+    return [];
+  }
   const isExistUser = await prisma.user.findUnique({
     where: { id: userId },
     include: {
@@ -204,7 +198,6 @@ export const getInitialContactsWithMessages = async (userId: string) => {
 
   return {
     users: Array.from(users.values()),
-    // onlineUsers: Array.from(onlineUsers.keys()),
   };
 };
 

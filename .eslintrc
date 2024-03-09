@@ -18,6 +18,7 @@
       "@typescript-eslint/consistent-type-definitions": ["error", "type"]
     },
     "globals": {
+      "global": "readonly",
       "process":"readonly"
     },
   

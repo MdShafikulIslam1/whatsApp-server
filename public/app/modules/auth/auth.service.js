@@ -16,29 +16,45 @@ exports.AuthService = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const ApiError_1 = __importDefault(require("../../../error/ApiError"));
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
-const checkUser = (email) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!email) {
-        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'User Email is required');
-    }
-    const isUserExist = yield prisma_1.default.user.findUnique({
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const jwtHelpes_1 = require("../../../helpers/jwtHelpes");
+const config_1 = __importDefault(require("../../../config"));
+const createAccount = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const { password } = data;
+    const hashedPassword = yield bcrypt_1.default.hash(password, 12);
+    const result = yield prisma_1.default.user.create({
+        data: Object.assign(Object.assign({}, data), { password: hashedPassword }),
+    });
+    return result;
+});
+const login = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const isUserExist = yield prisma_1.default.user.findFirst({
         where: {
-            email,
+            email: payload.email,
         },
     });
     if (!isUserExist) {
         throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'User does not exist');
     }
-    return isUserExist;
-});
-const onboardUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, email, about, profilePhoto } = payload;
-    if (!email || !name || !about || !profilePhoto) {
-        throw new ApiError_1.default(http_status_1.default.NO_CONTENT, 'Name,Email,About and Profile Photo must be provided');
+    if (isUserExist.password &&
+        !(yield bcrypt_1.default.compare(payload.password, isUserExist.password))) {
+        throw new ApiError_1.default(http_status_1.default.UNAUTHORIZED, 'Password is incorrect');
     }
-    const result = yield prisma_1.default.user.create({
-        data: { name, email, about, profilePhoto },
+    //create access token & refresh token
+    const { id, email } = isUserExist;
+    const accessToken = jwtHelpes_1.JwtHelpers.createToken({ id, email }, config_1.default.jwt.secret, config_1.default.jwt.expires_in);
+    return accessToken;
+});
+const getSingleUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExistUser = yield prisma_1.default.user.findUnique({
+        where: {
+            id: id,
+        },
     });
-    return result;
+    if (!isExistUser) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'User not found');
+    }
+    return isExistUser;
 });
 const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
     const users = yield prisma_1.default.user.findMany({
@@ -59,7 +75,8 @@ const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
     return usersGroupByInitialLetter;
 });
 exports.AuthService = {
-    checkUser,
-    onboardUser,
+    createAccount,
+    login,
     getAllUser,
+    getSingleUserById,
 };

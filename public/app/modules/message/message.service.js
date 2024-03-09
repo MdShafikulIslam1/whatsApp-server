@@ -13,22 +13,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageService = exports.getInitialContactsWithMessages = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const http_status_1 = __importDefault(require("http-status"));
 const ApiError_1 = __importDefault(require("../../../error/ApiError"));
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
-// Access global variable
-// eslint-disable-next-line no-undef
+const server_1 = require("../../../server");
 const addMessage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { message, from, to } = payload;
     if (!message || !from || !to) {
         throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'Message or from or to not found.');
     }
-    // const getUser = onlineUsersMap?.get(to);
+    const receiverSocketId = (0, server_1.getReceiverSocketId)(to);
     const result = yield prisma_1.default.message.create({
         data: {
             message,
             type: payload.type,
-            messageStatus: 'sent',
+            messageStatus: receiverSocketId ? 'delivered' : 'sent',
             sender: {
                 connect: {
                     id: from,
@@ -45,6 +45,9 @@ const addMessage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
             receiver: true,
         },
     });
+    if (receiverSocketId) {
+        server_1.io.to(receiverSocketId).emit('new_message', result);
+    }
     return result;
 });
 const getMessages = (from, to) => __awaiter(void 0, void 0, void 0, function* () {
@@ -89,6 +92,9 @@ const getMessages = (from, to) => __awaiter(void 0, void 0, void 0, function* ()
 });
 //get initialContactsWithUnreadMessages
 const getInitialContactsWithMessages = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!userId) {
+        return [];
+    }
     const isExistUser = yield prisma_1.default.user.findUnique({
         where: { id: userId },
         include: {
@@ -167,7 +173,6 @@ const getInitialContactsWithMessages = (userId) => __awaiter(void 0, void 0, voi
     }
     return {
         users: Array.from(users.values()),
-        // onlineUsers: Array.from(onlineUsers.keys()),
     };
 });
 exports.getInitialContactsWithMessages = getInitialContactsWithMessages;
