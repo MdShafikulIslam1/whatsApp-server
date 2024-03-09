@@ -17,22 +17,22 @@ const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const auth_service_1 = require("./auth.service");
-const checkUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield auth_service_1.AuthService.checkUser(req.body.email);
+const createAccount = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield auth_service_1.AuthService.createAccount(req.body);
     (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        message: 'User already exists',
+        statusCode: 201,
         success: true,
-        data: result,
+        message: 'Account created successfully',
+        data: user,
     });
 }));
-const onboardUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield auth_service_1.AuthService.onboardUser(req.body);
+const login = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = yield auth_service_1.AuthService.login(req.body);
     (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        message: 'Account has been created successfully',
+        statusCode: 201,
         success: true,
-        data: result,
+        message: 'Login successful',
+        data: token,
     });
 }));
 const getAllUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -44,8 +44,19 @@ const getAllUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: result,
     });
 }));
+const getSingleUserById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.params.id;
+    const result = yield auth_service_1.AuthService.getSingleUserById(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        message: 'Retrieve Single User',
+        success: true,
+        data: result,
+    });
+}));
 exports.AuthController = {
-    checkUser,
-    onboardUser,
+    createAccount,
+    login,
     getAllUser,
+    getSingleUserById,
 };

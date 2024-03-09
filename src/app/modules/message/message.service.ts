@@ -17,10 +17,12 @@ const addMessage = async (payload: {
       'Message or from or to not found.'
     );
   }
+  const receiverSocketId = getReceiverSocketId(to as string);
   const result = await prisma.message.create({
     data: {
       message,
       type: payload.type,
+      messageStatus: receiverSocketId ? 'delivered' : 'sent',
       sender: {
         connect: {
           id: from,
@@ -38,9 +40,7 @@ const addMessage = async (payload: {
     },
   });
 
-  const receiverSocketId = getReceiverSocketId(to as string);
   if (receiverSocketId) {
-    // emit soket event
     io.to(receiverSocketId).emit('new_message', result);
   }
 
@@ -91,7 +91,6 @@ const getMessages = async (from: string, to: string) => {
 //get initialContactsWithUnreadMessages
 
 export const getInitialContactsWithMessages = async (userId: string) => {
-  console.log('user id pawa jacce', userId);
   if (!userId) {
     return [];
   }
@@ -118,7 +117,6 @@ export const getInitialContactsWithMessages = async (userId: string) => {
       },
     },
   });
-  console.log('isExist', isExistUser);
   if (!isExistUser) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
