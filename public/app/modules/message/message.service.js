@@ -23,12 +23,10 @@ const addMessage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     if (!message || !from || !to) {
         throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'Message or from or to not found.');
     }
-    const receiverSocketId = (0, server_1.getReceiverSocketId)(to);
     const result = yield prisma_1.default.message.create({
         data: {
             message,
             type: payload.type,
-            messageStatus: receiverSocketId ? 'delivered' : 'sent',
             sender: {
                 connect: {
                     id: from,
@@ -45,6 +43,7 @@ const addMessage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
             receiver: true,
         },
     });
+    const receiverSocketId = (0, server_1.getReceiverSocketId)(to);
     if (receiverSocketId) {
         server_1.io.to(receiverSocketId).emit('new_message', result);
     }

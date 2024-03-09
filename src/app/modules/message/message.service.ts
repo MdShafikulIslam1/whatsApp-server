@@ -17,12 +17,11 @@ const addMessage = async (payload: {
       'Message or from or to not found.'
     );
   }
-  const receiverSocketId = getReceiverSocketId(to as string);
+
   const result = await prisma.message.create({
     data: {
       message,
       type: payload.type,
-      messageStatus: receiverSocketId ? 'delivered' : 'sent',
       sender: {
         connect: {
           id: from,
@@ -39,7 +38,7 @@ const addMessage = async (payload: {
       receiver: true,
     },
   });
-
+  const receiverSocketId = getReceiverSocketId(to as string);
   if (receiverSocketId) {
     io.to(receiverSocketId).emit('new_message', result);
   }
