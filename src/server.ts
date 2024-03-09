@@ -6,7 +6,10 @@ import { Server } from 'socket.io';
 export const server = http.createServer(app);
 export const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:3000'],
+    origin: [
+      'https://whats-app-clone-frontend-pi.vercel.app',
+      'http://localhost:3000',
+    ],
     methods: ['GET', 'POST'],
   },
 });

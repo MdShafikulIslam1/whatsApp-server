@@ -8,8 +8,7 @@ const app = express();
 
 app.use(
   cors({
-    // origin: 'https://whats-app-clone-frontend-pi.vercel.app',
-    origin: 'http://localhost:3000',
+    origin: 'https://whats-app-clone-frontend-pi.vercel.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
