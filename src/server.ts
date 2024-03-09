@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
-import http from 'http';
-import app from './app';
-import config from './config';
+// /* eslint-disable no-console */
+// import http from 'http';
+// import app from './app';
+// import config from './config';
 // import { Server } from 'socket.io';
-export const server = http.createServer(app);
+// const server = http.createServer(app);
 // export const io = new Server(server, {
 //   cors: {
 //     origin: [
@@ -41,9 +42,28 @@ export const server = http.createServer(app);
 //     io.emit('getOnlineUsers', Object.keys(userSoketMap));
 //   });
 // });
+// async function bootstrap() {
+//   try {
+//     if (!server.listening) {
+//       server.listen(config.port, () => {
+//         console.log(
+//           `Express Backend Setup Application listening on port ${config.port}`
+//         );
+//       });
+//     }
+//   } catch (error) {
+//     console.error('Failed to connect', error);
+//   }
+// }
+
+// bootstrap();
+
+import app from './app';
+import config from './config';
+
 async function bootstrap() {
   try {
-    server.listen(config.port, () => {
+    app.listen(config.port, () => {
       console.log(
         `Express Backend Setup Application listening on port ${config.port}`
       );
