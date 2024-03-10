@@ -14,7 +14,7 @@ export const server = http.createServer(app);
 app.use(
   cors({
     origin: [
-      'https://whats-app-clone-frontend-pi.vercel.app',
+      'https://whats-app-clone-frontend-pi.vercel.app/',
       'http://localhost:3000',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -28,7 +28,7 @@ app.use(
 export const io = new Server(server, {
   cors: {
     origin: [
-      'https://whats-app-clone-frontend-pi.vercel.app',
+      'https://whats-app-clone-frontend-pi.vercel.app/',
       'http://localhost:3000',
     ],
     methods: ['GET', 'POST'],
