@@ -38,8 +38,10 @@ const addMessage = async (payload: {
       receiver: true,
     },
   });
+
   const receiverSocketId = getReceiverSocketId(to as string);
   if (receiverSocketId) {
+    console.log('receiverSocket', receiverSocketId);
     io.to(receiverSocketId).emit('new_message', result);
   }
 

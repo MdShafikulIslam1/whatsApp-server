@@ -14,6 +14,15 @@ const http_1 = __importDefault(require("http"));
 const socket_io_1 = require("socket.io");
 const app = (0, express_1.default)();
 exports.server = http_1.default.createServer(app);
+app.use((0, cors_1.default)({
+    origin: [
+        'https://whats-app-clone-frontend-pi.vercel.app',
+        'http://localhost:3000',
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+}));
 // socket creation
 exports.io = new socket_io_1.Server(exports.server, {
     cors: {
@@ -24,15 +33,6 @@ exports.io = new socket_io_1.Server(exports.server, {
         methods: ['GET', 'POST'],
     },
 });
-app.use((0, cors_1.default)({
-    origin: [
-        'https://whats-app-clone-frontend-pi.vercel.app',
-        'http://localhost:3000',
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-}));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use('/api/v1', routes_1.default);

@@ -45,6 +45,7 @@ const addMessage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     });
     const receiverSocketId = (0, app_1.getReceiverSocketId)(to);
     if (receiverSocketId) {
+        console.log('receiverSocket', receiverSocketId);
         app_1.io.to(receiverSocketId).emit('new_message', result);
     }
     return result;

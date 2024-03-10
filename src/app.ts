@@ -11,6 +11,18 @@ const app = express();
 
 export const server = http.createServer(app);
 
+app.use(
+  cors({
+    origin: [
+      'https://whats-app-clone-frontend-pi.vercel.app',
+      'http://localhost:3000',
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  })
+);
+
 // socket creation
 
 export const io = new Server(server, {
@@ -23,17 +35,6 @@ export const io = new Server(server, {
   },
 });
 
-app.use(
-  cors({
-    origin: [
-      'https://whats-app-clone-frontend-pi.vercel.app',
-      'http://localhost:3000',
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-  })
-);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
