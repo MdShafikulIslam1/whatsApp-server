@@ -5,31 +5,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getReceiverSocketId = exports.io = exports.server = void 0;
 /* eslint-disable no-console */
-const express_1 = __importDefault(require("express"));
-const routes_1 = __importDefault(require("./app/routes"));
 const cors_1 = __importDefault(require("cors"));
-const http_status_1 = __importDefault(require("http-status"));
-const gobalErrorHandler_1 = __importDefault(require("./app/middlewares/gobalErrorHandler"));
+const express_1 = __importDefault(require("express"));
 const http_1 = __importDefault(require("http"));
+const http_status_1 = __importDefault(require("http-status"));
 const socket_io_1 = require("socket.io");
+const gobalErrorHandler_1 = __importDefault(require("./app/middlewares/gobalErrorHandler"));
+const routes_1 = __importDefault(require("./app/routes"));
 const app = (0, express_1.default)();
 exports.server = http_1.default.createServer(app);
+const frontendUrl = process.env.ACCESS_FRONTEND_URL;
 app.use((0, cors_1.default)({
-    origin: [
-        'https://whats-app-clone-frontend-pi.vercel.app/',
-        'http://localhost:3000',
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: [frontendUrl, 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }));
 // socket creation
 exports.io = new socket_io_1.Server(exports.server, {
     cors: {
-        origin: [
-            'https://whats-app-clone-frontend-pi.vercel.app/',
-            'http://localhost:3000',
-        ],
+        origin: [frontendUrl, 'http://localhost:3000'],
         methods: ['GET', 'POST'],
     },
 });
@@ -42,25 +37,25 @@ app.get('/', (req, res) => {
         message: 'WhatsApp application server running successfully',
     });
 });
+const userSocketMap = {}; // {userId: socketID}
 const getReceiverSocketId = (receiverId) => {
-    return userSoketMap[receiverId];
+    return userSocketMap[receiverId];
 };
 exports.getReceiverSocketId = getReceiverSocketId;
-const userSoketMap = {}; // {userId: soketID}
-exports.io.on('connection', soket => {
-    console.log('a user connected', soket.id);
-    const userId = soket.handshake.query.userId;
+exports.io.on('connection', socket => {
+    console.log('a user connected', socket.id);
+    const userId = socket.handshake.query.userId;
     if (userId !== undefined) {
-        userSoketMap[userId] = soket.id;
+        userSocketMap[userId] = socket.id;
     }
     // io.emit() is used to send events to all the connected clients
-    exports.io.emit('getOnlineUsers', Object.keys(userSoketMap));
+    exports.io.emit('getOnlineUsers', Object.keys(userSocketMap));
     console.log('the active user', userId);
-    // soket.on() is used to listen to the events. can be used both on client and server side
-    soket.on('disconnect', () => {
-        console.log('user disconnected', soket.id);
-        delete userSoketMap[userId];
-        exports.io.emit('getOnlineUsers', Object.keys(userSoketMap));
+    // socket.on() is used to listen to the events. can be used both on client and server side
+    socket.on('disconnect', () => {
+        console.log('user disconnected', socket.id);
+        delete userSocketMap[userId];
+        exports.io.emit('getOnlineUsers', Object.keys(userSocketMap));
     });
 });
 // Handle 404

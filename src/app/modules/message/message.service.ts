@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status';
+import { getReceiverSocketId, io } from '../../../app';
 import ApiError from '../../../error/ApiError';
 import prisma from '../../../shared/prisma';
-import { getReceiverSocketId, io } from '../../../app';
 
 const addMessage = async (payload: {
   message: string;
@@ -41,7 +41,6 @@ const addMessage = async (payload: {
 
   const receiverSocketId = getReceiverSocketId(to as string);
   if (receiverSocketId) {
-    console.log('receiverSocket', receiverSocketId);
     io.to(receiverSocketId).emit('new_message', result);
   }
 

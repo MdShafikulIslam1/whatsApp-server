@@ -1,23 +1,22 @@
 /* eslint-disable no-console */
-import express, { NextFunction, Request, Response } from 'express';
-import router from './app/routes';
 import cors from 'cors';
-import httpStatus from 'http-status';
-import globalErrorHandler from './app/middlewares/gobalErrorHandler';
+import express, { NextFunction, Request, Response } from 'express';
 import http from 'http';
+import httpStatus from 'http-status';
 import { Server } from 'socket.io';
+import globalErrorHandler from './app/middlewares/gobalErrorHandler';
+import router from './app/routes';
 
 const app = express();
 
 export const server = http.createServer(app);
 
+const frontendUrl: string = process.env.ACCESS_FRONTEND_URL as string;
+
 app.use(
   cors({
-    origin: [
-      'https://whats-app-clone-frontend-pi.vercel.app/',
-      'http://localhost:3000',
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: [frontendUrl, 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   })
@@ -27,10 +26,7 @@ app.use(
 
 export const io = new Server(server, {
   cors: {
-    origin: [
-      'https://whats-app-clone-frontend-pi.vercel.app/',
-      'http://localhost:3000',
-    ],
+    origin: [frontendUrl, 'http://localhost:3000'],
     methods: ['GET', 'POST'],
   },
 });
@@ -47,31 +43,31 @@ app.get('/', (req, res) => {
   });
 });
 
+const userSocketMap: { [userId: string]: string } = {}; // {userId: socketID}
+
 export const getReceiverSocketId = (receiverId: string) => {
-  return userSoketMap[receiverId];
+  return userSocketMap[receiverId];
 };
 
-const userSoketMap: { [userId: string]: string } = {}; // {userId: soketID}
-
-io.on('connection', soket => {
-  console.log('a user connected', soket.id);
-  const userId: string | undefined = soket.handshake.query.userId as
+io.on('connection', socket => {
+  console.log('a user connected', socket.id);
+  const userId: string | undefined = socket.handshake.query.userId as
     | string
     | undefined;
 
   if (userId !== undefined) {
-    userSoketMap[userId] = soket.id;
+    userSocketMap[userId] = socket.id;
   }
   // io.emit() is used to send events to all the connected clients
-  io.emit('getOnlineUsers', Object.keys(userSoketMap));
+  io.emit('getOnlineUsers', Object.keys(userSocketMap));
 
   console.log('the active user', userId);
 
-  // soket.on() is used to listen to the events. can be used both on client and server side
-  soket.on('disconnect', () => {
-    console.log('user disconnected', soket.id);
-    delete userSoketMap[userId as string];
-    io.emit('getOnlineUsers', Object.keys(userSoketMap));
+  // socket.on() is used to listen to the events. can be used both on client and server side
+  socket.on('disconnect', () => {
+    console.log('user disconnected', socket.id);
+    delete userSocketMap[userId as string];
+    io.emit('getOnlineUsers', Object.keys(userSocketMap));
   });
 });
 

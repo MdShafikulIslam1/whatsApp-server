@@ -15,9 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageService = exports.getInitialContactsWithMessages = void 0;
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const http_status_1 = __importDefault(require("http-status"));
+const app_1 = require("../../../app");
 const ApiError_1 = __importDefault(require("../../../error/ApiError"));
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
-const app_1 = require("../../../app");
 const addMessage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { message, from, to } = payload;
     if (!message || !from || !to) {
@@ -45,7 +45,6 @@ const addMessage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     });
     const receiverSocketId = (0, app_1.getReceiverSocketId)(to);
     if (receiverSocketId) {
-        console.log('receiverSocket', receiverSocketId);
         app_1.io.to(receiverSocketId).emit('new_message', result);
     }
     return result;
